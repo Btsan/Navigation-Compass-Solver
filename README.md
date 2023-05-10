@@ -18,7 +18,7 @@ $$ \cos(b_1 x_1 + b_2 x_2 + b_3 x_3 + b_0) = -1 $$
 
 $$ \cos(c_1 x_1 + c_2 x_2 + c_3 x_3 + c_0) = -1 $$
 
-The solution to this is how many times to rotate each group of rings. `navigation_compass.py` attempts to solve this system via brute-force.
+The solution to this, $x_1, x_2,$ and $x3$, are the number of times to rotate each group of rings. The python script `navigation_compass.py` attempts to solve this system via brute-force.
 
 ### Usage
 
@@ -26,15 +26,15 @@ The solution to this is how many times to rotate each group of rings. `navigatio
 
 | Flag | Required | Valid Argument | Description |
 | ----- | --- | ------ | ------ |
-| `--inner` | Yes | Number that is a multiple of 60 | Degree of inner axis | 
-| `--middle` | Yes | Number that is a multiple of 60 | Degree of middle axis | 
-| `--outer` | Yes | Number that is a multiple of 60 | Degree of outer axis | 
-| `--marks-inner` | Yes | Natural number | Number of marks on inner ring, indicating amount it rotates in a step | 
-| `--marks-middle` | Yes | Natural number | Number of marks on middle ring, indicating amount it rotates in a step | 
-| `--marks-outer` | Yes | Natural number | Number of marks on outer ring, indicating amount it rotates in a step | 
-| `--inner-cw` | No | None | Raise flag only if inner ring rotates clockwise | 
-| `--middle-cw` | No | None | Raise flag only if middle ring rotates clockwise | 
-| `--outer-cw` | No | None | Raise flag only if outer ring rotates clockwise | 
+| `--inner` | Yes | Number that is a multiple of 60 | Degree of the inner axis | 
+| `--middle` | Yes | Number that is a multiple of 60 | Degree of the middle axis | 
+| `--outer` | Yes | Number that is a multiple of 60 | Degree of the outer axis | 
+| `--marks-inner` | Yes | Natural number | Number of marks on inner ring, indicating rotation per step | 
+| `--marks-middle` | Yes | Natural number | Number of marks on middle ring, indicating rotation per step | 
+| `--marks-outer` | Yes | Natural number | Number of marks on outer ring, indicating rotation per step | 
+| `--inner-cw` | No | None | Specify flag only if inner ring rotates clockwise | 
+| `--middle-cw` | No | None | Specify flag only if middle ring rotates clockwise | 
+| `--outer-cw` | No | None | Specify flag only if outer ring rotates clockwise | 
 | `-a`, `--group-a` | Yes | At least one of `inner`, `middle,` and  `outer` | First group of rings that rotate together | 
 | `-b`, `--group-b` | Yes | At least one of `inner`, `middle,` and  `outer` | Second group of rings that rotate together |  
 | `-c`, `--group-c` | Yes | At least one of `inner`, `middle,` and  `outer` | Third group of rings that rotate together | 
