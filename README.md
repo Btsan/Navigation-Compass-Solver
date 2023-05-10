@@ -54,4 +54,3 @@ Solved in 11 brute-force iterations
 ```
 
 If no solution is found, check if the arguments are correct.
-Otherwise, increase the maximum brute-force attempts with `--maxit`.
