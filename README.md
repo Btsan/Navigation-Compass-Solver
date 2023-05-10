@@ -1,5 +1,7 @@
 # Navigation-Compass-Solver
-Brute-force solver for Navigation Compass puzzles 
+Brute-force solver for Navigation Compass puzzles
+
+<sub>Initial upload (May 9, 2023)</sub>
 
 ---
 
