@@ -12,7 +12,7 @@ Brute-force solver for Navigation Compass puzzles
 
 ### Problem 
 
-The Navigation Compass problem is a game involving 3 rings, $A, B,$ and $C$, which each have their own initial angle and rotation per step, rings may rotate in multiples of $\frac{\pi}{3}$ either clockwise or counter-clockwise. Additionally, the rings only rotate in 3 groups, e.g. ring $A$ may move simultaneously as a group with ring $B$ and/or with ring $c$ or as a group by itself. These patterns are not known prior to starting the problem. The goal of the player is to rotate the rings such that they are all oriented $\pi$ radians or $180\degree$. This can be formulated as solving the following system of equations.
+The Navigation Compass problem is a game involving 3 rings, $A, B,$ and $C$, which each have their own initial angle and rotation per step, rings may rotate in multiples of $\frac{\pi}{3}$ either clockwise or counter-clockwise. Additionally, the rings only rotate in 3 groups, e.g. ring $A$ may move simultaneously as a group with ring $B$ and/or with ring $C$ or as a group by itself. These patterns are not known prior to starting the problem. The goal of the player is to rotate the rings such that they are all oriented $\pi$ radians or $180\degree$. This can be formulated as solving the following system of equations.
 
 $$ \cos(a_1 x_1 + a_2 x_2 + a_3 x_3 + a_0) = -1 $$
 
