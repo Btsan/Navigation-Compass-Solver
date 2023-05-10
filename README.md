@@ -27,7 +27,7 @@ The solution to this, $x_1, x_2,$ and $x3$, are the number of times to rotate ea
 `navigation_compass.py` has several arguments to specify the configuration of a navigation compass puzzle.
 
 | Flag | Required | Valid Argument | Description |
-| ----- | --- | ------ | ------ |
+| -------- | --- | ---- | ---- |
 | `--inner` | Yes | Number that is a multiple of 60 | Degree of the inner axis | 
 | `--middle` | Yes | Number that is a multiple of 60 | Degree of the middle axis | 
 | `--outer` | Yes | Number that is a multiple of 60 | Degree of the outer axis | 
