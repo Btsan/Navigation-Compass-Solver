@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<title>Navigation Compass Solver</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-light-blue.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+<script src="https://www.w3schools.com/lib/w3.js"></script>
+<body>
+
+<div style="display:none;">
+  The Navigation Compass problem is a game involving 3 rings, $A, B,$ and $C$, which each have their own initial angle and rotation per step --- rings may rotate in multiples of $\frac{\pi}{3}$ either clockwise or counter-clockwise. Additionally, the rings only rotate in 3 patterns, e.g. ring $A$ may move simultaneously with ring $B$ and/or with ring $c$ or by itself. These patterns are not known prior to starting the problem. The goal of the player is to rotate the rings such that they are all oriented $\pi$ radians or $180\degree$. This can be formulated as solving the following system of equations.
+
+  \begin{align}
+    \cos(a_1 x_1 + a_2 x_2 + a_3 x_3 + a_0) &= -1 \nonumber \\
+    \cos(b_1 x_1 + b_2 x_2 + b_3 x_3 + b_0) &= -1 \nonumber \\
+    \cos(c_1 x_1 + c_2 x_2 + c_3 x_3 + c_0) &= -1 
+\end{align}
+
+\begin{align}
+    a_1 x_1 + a_2 x_2 + a_3 x_3 + a_0 &= \pi \nonumber \\
+    b_1 x_1 + b_2 x_2 + b_3 x_3 + b_0 &= \pi \nonumber \\
+    c_1 x_1 + c_2 x_2 + c_3 x_3 + c_0 &= \pi 
+    \label{system}
+\end{align}
+
+  The initial angle of ring $A$ is denoted as $a_0$. The amount it would rotate for a single step in each of the 3 movement patterns is $a_1, a_2,$ and $a_3$. All angles $a_0, a_1, a_2,$ and $a_3$ can only be multiples of $\frac{\pi}{3}$, so that each ring can only be in 6 distinct orientations. The variable to solve for, the number of times to rotate each pattern, is denoted by $x_1, x_2,$ and $x_3$.
+
+  Assuming a configuration of a Navigation Compass puzzle is solvable, a solution may have fractional answers for the value of $x_1, x_2,$ and $x_3$. Since these variables --- which represent the finite number of times a pattern should be moved --- are discrete, any non-real number $x_1, x_2, x_3 \notin \mathcal{R}$ may or may not be an actionable answer, i.e. the puzzle has no solution.
+</div>
+
+<div class="w3-container w3-display-container">
+
+<div class="w3-panel w3-leftbar w3-theme-l4">
+  <h3 class="w3-serif">Only 216 Possible Solutions</h3>
+</div>
+<form name="myForm" onsubmit="return false;">
+  <div class="w3-row-padding w3-padding-large w3-margin w3-card w3-theme-l5">
+    <div class="w3-third">
+      <h4>Initial Axis Angle</h4>
+      <p>Angle of Inner Axis:</p>
+      <input required class="w3-radio" type="radio" id="inner_angle_0" name="inner_angle" value=0>
+      <label for="inner_angle_0">0&deg</label><br>
+      <input required class="w3-radio" type="radio" id="inner_angle_60" name="inner_angle" value=60>
+      <label for="inner_angle_60">60&deg</label><br>
+      <input required class="w3-radio" type="radio" id="inner_angle_60" name="inner_angle" value=120>
+      <label for="inner_angle_60">120&deg</label><br>
+      <input required class="w3-radio" type="radio" id="inner_angle_180" name="inner_angle" value=180>
+      <label for="inner_angle_180">180&deg</label><br>
+      <input required class="w3-radio" type="radio" id="inner_angle_240" name="inner_angle" value=240>
+      <label for="inner_angle_240">240&deg</label><br>
+      <input required class="w3-radio" type="radio" id="inner_angle_300" name="inner_angle" value=300>
+      <label for="inner_angle_300">300&deg</label><br>
+    </div>
+    <div class="w3-third">
+      <h4>Rotation Direction</h4>
+      <p>Direction of Inner Ring:</p>
+      <input required class="w3-radio" type="radio" id="inner_rot_cw" name="inner_rot" value="cw">
+      <label for="inner_rot_cw">Clockwise</label><br>
+      <input required class="w3-radio" type="radio" id="inner_rot_ccw" name="inner_rot" value="ccw">
+      <label for="inner_rot_ccw">Counter-clockwise</label><br>
+    </div>
+    <div class="w3-third">
+      <h4>Astral Marks</h4>
+      <p>Marks on Inner Ring:</p>
+      <input required class="w3-radio" type="radio" id="inner_marks_1" name="inner_marks" value=1>
+      <label for="inner_marks_1">One</label><br>
+      <input required class="w3-radio" type="radio" id="inner_marks_2" name="inner_marks" value=2>
+      <label for="inner_marks_2">Two</label><br>
+      <input required class="w3-radio" type="radio" id="inner_marks_3" name="inner_marks" value=3>
+      <label for="inner_marks_3">Three</label><br>
+      <input required class="w3-radio" type="radio" id="inner_marks_4" name="inner_marks" value=4>
+      <label for="inner_marks_4">Four</label><br>
+      <input required class="w3-radio" type="radio" id="inner_marks_5" name="inner_marks" value=5>
+      <label for="inner_marks_5">Five</label><br>
+    </div>
+  </div>
+
+
+
+  <div class="w3-row-padding w3-padding-large w3-margin w3-card w3-theme-l4">
+    <div class="w3-third">
+      <p>Angle of Middle Axis:</p>
+      <input required class="w3-radio" type="radio" id="middle_angle_0" name="middle_angle" value=0>
+      <label for="middle_angle_0">0&deg</label><br>
+      <input required class="w3-radio" type="radio" id="middle_angle_60" name="middle_angle" value=60>
+      <label for="middle_angle_60">60&deg</label><br>
+      <input required class="w3-radio" type="radio" id="middle_angle_120" name="middle_angle" value=120>
+      <label for="middle_angle_120">120&deg</label><br>
+      <input required class="w3-radio" type="radio" id="middle_angle_180" name="middle_angle" value=180>
+      <label for="middle_angle_180">180&deg</label><br>
+      <input required class="w3-radio" type="radio" id="middle_angle_240" name="middle_angle" value=240>
+      <label for="middle_angle_240">240&deg</label><br>
+      <input required class="w3-radio" type="radio" id="middle_angle_300" name="middle_angle" value=300>
+      <label for="middle_angle_300">300&deg</label><br>
+    </div>
+    <div class="w3-third">
+      <p>Direction of Middle Ring:</p>
+      <input required class="w3-radio" type="radio" id="middle_rot_cw" name="middle_rot" value="cw">
+      <label for="middle_rot_cw">Clockwise</label><br>
+      <input required class="w3-radio" type="radio" id="middle_rot_ccw" name="middle_rot" value="ccw">
+      <label for="middle_rot_ccw">Counter-clockwise</label><br>
+    </div>
+    <div class="w3-third">
+      <p>Marks on Middle Ring:</p>
+      <input required class="w3-radio" type="radio" id="middle_marks_1" name="middle_marks" value=1>
+      <label for="middle_marks_1">One</label><br>
+      <input required class="w3-radio" type="radio" id="middle_marks_2" name="middle_marks" value=2>
+      <label for="middle_marks_2">Two</label><br>
+      <input required class="w3-radio" type="radio" id="middle_marks_3" name="middle_marks" value=3>
+      <label for="middle_marks_3">Three</label><br>
+      <input required class="w3-radio" type="radio" id="middle_marks_4" name="middle_marks" value=4>
+      <label for="middle_marks_4">Four</label><br>
+      <input required class="w3-radio" type="radio" id="middle_marks_5" name="middle_marks" value=5>
+      <label for="middle_marks_5">Five</label><br>
+    </div>
+  </div>
+
+  <div class="w3-row-padding w3-padding-large w3-margin w3-card w3-theme-l5">
+    <div class="w3-third">
+      <p>Angle of Outer Axis:</p>
+      <input required class="w3-radio" type="radio" id="outer_angle_0" name="outer_angle" value=0>
+      <label for="outer_angle_0">0&deg</label><br>
+      <input required class="w3-radio" type="radio" id="outer_angle_60" name="outer_angle" value=60>
+      <label for="outer_angle_60">60&deg</label><br>
+      <input required class="w3-radio" type="radio" id="outer_angle_120" name="outer_angle" value=120>
+      <label for="outer_angle_120">120&deg</label><br>
+      <input required class="w3-radio" type="radio" id="outer_angle_180" name="outer_angle" value=180>
+      <label for="outer_angle_180">180&deg</label><br>
+      <input required class="w3-radio" type="radio" id="outer_angle_240" name="outer_angle" value=240>
+      <label for="outer_angle_240">240&deg</label><br>
+      <input required class="w3-radio" type="radio" id="outer_angle_300" name="outer_angle" value=300>
+      <label for="outer_angle_300">300&deg</label><br>
+    </div>
+    <div class="w3-third">
+      <p>Direction of Outer Ring:</p>
+      <input required class="w3-radio" type="radio" id="outer_rot_cw" name="outer_rot" value="cw">
+      <label for="outer_rot_cw">Clockwise</label><br>
+      <input required class="w3-radio" type="radio" id="outer_rot_ccw" name="outer_rot" value="ccw">
+      <label for="outer_rot_ccw">Counter-clockwise</label><br>
+    </div>
+    <div class="w3-third">
+      <p>Marks on Outer Ring:</p>
+      <input required class="w3-radio" type="radio" id="outer_marks_1" name="outer_marks" value=1>
+      <label for="outer_marks_1">One</label><br>
+      <input required class="w3-radio" type="radio" id="outer_marks_2" name="outer_marks" value=2>
+      <label for="outer_marks_2">Two</label><br>
+      <input required class="w3-radio" type="radio" id="outer_marks_3" name="outer_marks" value=3>
+      <label for="outer_marks_3">Three</label><br>
+      <input required class="w3-radio" type="radio" id="outer_marks_4" name="outer_marks" value=4>
+      <label for="outer_marks_4">Four</label><br>
+      <input required class="w3-radio" type="radio" id="outer_marks_5" name="outer_marks" value=5>
+      <label for="outer_marks_5">Five</label><br>
+    </div>
+  </div>
+
+  <div class="w3-row-padding w3-padding-large w3-margin w3-card w3-theme-l4">
+    <div class="w3-third">
+      <p>Group A</p>
+      <input class="w3-check" type="checkbox" id="inner_a" name="inner_a" value="inner">
+      <label for="inner_a">Inner</label><br>
+      <input class="w3-check" type="checkbox" id="middle_a" name="middle_a" value="middle">
+      <label for="middle_a">Middle</label><br>
+      <input class="w3-check" type="checkbox" id="outer_a" name="outer_a" value="outer">
+      <label for="outer_a">Outer</label>
+    </div>
+    <div class="w3-third">
+      <p>Group B</p>
+      <input class="w3-check" type="checkbox" id="inner_b" name="inner_b" value="inner">
+      <label for="inner_b">Inner</label><br>
+      <input class="w3-check" type="checkbox" id="middle_b" name="middle_b" value="middle">
+      <label for="middle_b">Middle</label><br>
+      <input class="w3-check" type="checkbox" id="outer_b" name="outer_b" value="outer">
+      <label for="outer_b">Outer</label>
+    </div>
+    <div class="w3-third">
+      <p>Group C</p>
+      <input class="w3-check" type="checkbox" id="inner_c" name="inner_c" value="inner">
+      <label for="inner_c">Inner</label><br>
+      <input class="w3-check" type="checkbox" id="middle_c" name="middle_c" value="middle">
+      <label for="middle_c">Middle</label><br>
+      <input class="w3-check" type="checkbox" id="outer_c" name="outer_c" value="outer">
+      <label for="outer_c">Outer</label>
+    </div>
+  </div>
+
+  <div class="w3-row-padding w3-padding-large w3-margin w3-theme-l5">
+    <div class="w3-center">
+      <input class="w3-button w3-theme w3-round-large w3-padding-large" type="submit" onclick="w3.show('#loader'); myFunction();" value="Brute Force">
+    <!-- Try it</button> -->
+      <p id="loader" style="display:none;"><i class="fa fa-spinner w3-spin" style="font-size:64px"></i></p>
+      <p id="demo"></p>
+    </div>
+  </div>
+</form>
+
+</div>
+
+<script>
+
+  var search = []; // 125 x 1 x 3
+  for (let i = 0; i < 6; i++) {
+    for (let j = 0; j < 6; j++) {
+      for (let k = 0; k < 6; k++) {
+        search.push([[i, j, k]]);
+      }
+    }
+  }
+  const full_search = tf.tensor3d(search);
+
+  function show(text) {
+    w3.hide("#loader");
+    document.getElementById("demo").innerHTML = text;
+  }
+
+  function answer_msg(x, inner_a, inner_b, inner_c, middle_a, middle_b, middle_c, outer_a, outer_b, outer_c) {
+    let answer = search[x][0];
+    let group_a = [];
+    if (inner_a){
+      group_a.push("inner");
+    }
+    if (middle_a){
+      group_a.push("middle");
+    }
+    if (outer_a){
+      group_a.push("outer");
+    }
+    let group_b = [];
+    if (inner_b){
+      group_b.push("inner");
+    }
+    if (middle_b){
+      group_b.push("middle");
+    }
+    if (outer_b){
+      group_b.push("outer");
+    }
+    let group_c = [];
+    if (inner_c){
+      group_c.push("inner");
+    }
+    if (middle_c){
+      group_c.push("middle");
+    }
+    if (outer_c){
+      group_c.push("outer");
+    }
+    // console.log("Rotate group A " + answer[0] + " times");
+    // console.log("Rotate group B " + answer[1] + " times");
+    // console.log("Rotate group C " + answer[2] + " times");
+    let text = ""
+    if (answer[0] > 0) {
+      text += "Rotate group A (" + group_a.join(" ") + ") " + answer[0] + " times <br>";
+    }
+    if (answer[1] > 0) {
+      text += "Rotate group B (" + group_b.join(" ") + ") " + answer[1] + " times <br>";
+    }
+    if (answer[2] > 0) {
+      text += "Rotate group C (" + group_c.join(" ") + ") " + answer[2] + " times <br>";
+    }
+    return text;
+  }
+
+  function pass(a, b, c) {
+    return (a % 360) == 180 && (b % 360) && (b % 360) == 180 && (c % 360) == 180;
+  }
+
+  function myFunction() {
+    // show("Testing output");
+
+    let inner_marks = document.forms["myForm"]["inner_marks"].value;
+    let inner_cw = document.forms["myForm"]["inner_rot"].value == "cw";
+    let middle_marks = document.forms["myForm"]["middle_marks"].value;
+    let middle_cw = document.forms["myForm"]["middle_rot"].value == "cw";
+    let outer_marks = document.forms["myForm"]["outer_marks"].value;
+    let outer_cw = document.forms["myForm"]["outer_rot"].value == "cw";
+
+    let rot_inner = inner_cw? 360 - inner_marks * 60 : inner_marks * 60;
+    let rot_middle = middle_cw? 360 - middle_marks * 60 : middle_marks * 60;
+    let rot_outer = outer_cw? 360 - outer_marks * 60 : outer_marks * 60;
+
+    let inner = document.forms["myForm"]["inner_angle"].value;
+    let middle = document.forms["myForm"]["middle_angle"].value;
+    let outer = document.forms["myForm"]["outer_angle"].value;
+
+    let inner_a = document.forms["myForm"]["inner_a"].checked;
+    let inner_b = document.forms["myForm"]["inner_b"].checked;
+    let inner_c = document.forms["myForm"]["inner_c"].checked;
+    let middle_a = document.forms["myForm"]["middle_a"].checked;
+    let middle_b = document.forms["myForm"]["middle_b"].checked;
+    let middle_c = document.forms["myForm"]["middle_c"].checked;
+    let outer_a = document.forms["myForm"]["outer_a"].checked;
+    let outer_b = document.forms["myForm"]["outer_b"].checked;
+    let outer_c = document.forms["myForm"]["outer_c"].checked;
+    let group_a = [inner_a? rot_inner : 0, middle_a? rot_middle: 0, outer_a? rot_outer: 0];
+    let group_b = [inner_b? rot_inner : 0, middle_b? rot_middle: 0, outer_b? rot_outer: 0];
+    let group_c = [inner_c? rot_inner : 0, middle_c? rot_middle: 0, outer_c? rot_outer: 0];
+    // console.log("Start: " + [inner, middle, outer]);
+    // console.log("A: " + group_a);
+    // console.log("B: " + group_b);
+    // console.log("C: " + group_c);
+
+    const pos = tf.tensor1d([Number(inner), Number(middle), Number(outer)]);
+    // pos.print();
+    const mat = tf.tensor2d([group_a, group_b, group_c]);
+    const brute = tf.add(full_search.matMul(mat), pos);
+    let attempts = brute.array();
+
+    attempts.then(
+      function(value) {
+        for (x in value) {
+          // console.log(x, value[x][0][0] % 360, value[x][0][1] % 360, value[x][0][2] % 360);
+          if (pass(value[x][0][0], value[x][0][1], value[x][0][2])) {
+            // console.log("Solution " + value[x] + " at " + x);
+            show(answer_msg(x, inner_a, inner_b, inner_c, middle_a, middle_b, middle_c, outer_a, outer_b, outer_c));
+            return;
+          }
+        }
+        console.log("No solution found");
+        show("Unsolvable!");
+      ;},
+      function(error) {console.log("The answer went missing.");}
+    );
+  }
+</script>
+
+</body>
+</html>
